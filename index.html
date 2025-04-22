@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard Siswa</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { margin: 0; padding: 0; background: #f4f6fb; color: #333; }
+    .container { max-width: 480px; margin: auto; padding: 20px; }
+    .card {
+      background: white; padding: 20px; border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.05); margin-bottom: 20px;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .title { font-size: 1.5em; font-weight: 600; text-align: center; margin-bottom: 10px; }
+    .input-group { margin-bottom: 15px; }
+    .input-group input {
+      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;
+    }
+    .btn {
+      background: #59C3B8; color: white; padding: 12px;
+      border: none; border-radius: 10px; width: 100%; font-weight: bold;
+    }
+    .btn:hover { background: #12876f; }
+    .centered { text-align: center; }
+
+    .progress-bar {
+      background: #eee; height: 10px; border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 10px; width: 0%; background: #59C3B8;
+      transition: width 1s ease;
+    }
+    .stat-item { margin-bottom: 14px; }
+    .stat-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.95em; font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .badge-box {
+      background: #f9f9ff;
+      border: 1px dashed #ccc;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .badge-emoji { font-size: 2.3rem; }
+    .badge-name { font-size: 1.1rem; font-weight: 600; margin-top: 5px; }
+    .badge-desc { color: #777; font-size: 0.9rem; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Login -->
+    <div id="login-card" class="card">
+      <div class="title">Login Rapor</div>
+      <div class="input-group"><input type="text" id="username" placeholder="Username"></div>
+      <div class="input-group"><input type="password" id="password" placeholder="Password"></div>
+      <button class="btn" onclick="login()">Masuk</button>
+      <p id="login-message" class="centered" style="color:red;margin-top:10px;"></p>
+    </div>
+
+    <!-- Info Siswa -->
+    <div id="dashboard-card" class="card hidden centered">
+      <h2 id="nama-siswa"></h2>
+      <p><strong>NIS:</strong> <span id="nis-siswa"></span></p>
+      <p><strong>Kelas:</strong> <span id="kelas-siswa"></span></p>
+    </div>
+
+    <!-- Badge Section -->
+    <div id="badge-card" class="card hidden">
+      <div class="title">Badge Siswa</div>
+      <div id="badge-container"></div>
+    </div>
+
+    <!-- Statistik Nilai -->
+    <div id="statistik-card" class="card hidden">
+      <div class="title">Statistik Nilai</div>
+      <div id="stat-list"></div>
+    </div>
+
+    <div id="logout-card" class="card hidden centered">
+      <button class="btn" onclick="logout()">Keluar</button>
+    </div>
+
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdfpidK652Jk0IomsQOHBR5c6xajzFpkqSSrsW551tMMqA9yt8I5MU_6ynkdaBL5uXIQ/exec"; // Ganti dengan URL Web App GAS kamu
+
+    function login() {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value.trim();
+      document.getElementById("login-message").innerText = "";
+      if (!u || !p) {
+        document.getElementById("login-message").innerText = "Lengkapi semua kolom.";
+        return;
+      }
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ username: u, password: p }),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(handleLogin)
+      .catch(() => {
+        document.getElementById("login-message").innerText = "Server error.";
+      });
+    }
+
+    function handleLogin(res) {
+      if (res.status === "ok") {
+        document.getElementById("login-card").classList.add("hidden");
+        document.getElementById("dashboard-card").classList.remove("hidden");
+        document.getElementById("badge-card").classList.remove("hidden");
+        document.getElementById("statistik-card").classList.remove("hidden");
+        document.getElementById("logout-card").classList.remove("hidden");
+
+        document.getElementById("nama-siswa").innerText = res.nama;
+        document.getElementById("nis-siswa").innerText = res.nis;
+        document.getElementById("kelas-siswa").innerText = res.kelas;
+
+        const badgeContainer = document.getElementById("badge-container");
+        badgeContainer.innerHTML = "";
+        for (let i = 0; i < res.emoji.length; i++) {
+          badgeContainer.innerHTML += `
+            <div class="badge-box centered">
+              <div class="badge-emoji">${res.emoji[i]}</div>
+              <div class="badge-name">${res.badge_name[i]}</div>
+              <div class="badge-desc">${res.badge_desc[i]}</div>
+            </div>`;
+        }
+
+        const list = document.getElementById("stat-list");
+        list.innerHTML = "";
+        for (let i = 0; i < res.mapel.length; i++) {
+          const nilai = parseInt(res.nilai[i]) || 0;
+          const barID = "bar" + i;
+          list.innerHTML += `
+            <div class="stat-item">
+              <div class="stat-label">
+                <span>${res.mapel[i]}</span>
+                <span>${nilai}</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="${barID}"></div>
+              </div>
+            </div>`;
+          setTimeout(() => {
+            document.getElementById(barID).style.width = nilai + "%";
+          }, 100);
+        }
+      } else {
+        document.getElementById("login-message").innerText = "Login gagal. Username/password salah.";
+      }
+    }
+
+    function logout() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
