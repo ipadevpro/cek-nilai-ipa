@@ -4,57 +4,154 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard Siswa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body { margin: 0; padding: 0; background: #f4f6fb; color: #333; }
-    .container { max-width: 480px; margin: auto; padding: 20px; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #F9FAFB;
+      color: #333;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+
     .card {
-      background: white; padding: 20px; border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.05); margin-bottom: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      margin-bottom: 20px;
       animation: fadeIn 0.4s ease;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .title { font-size: 1.5em; font-weight: 600; text-align: center; margin-bottom: 10px; }
-    .input-group { margin-bottom: 15px; }
-    .input-group input {
-      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;
-    }
-    .btn {
-      background: #59C3B8; color: white; padding: 12px;
-      border: none; border-radius: 10px; width: 100%; font-weight: bold;
-    }
-    .btn:hover { background: #12876f; }
-    .centered { text-align: center; }
 
-    .progress-bar {
-      background: #eee; height: 10px; border-radius: 10px; overflow: hidden;
+    .title {
+      font-size: 1.5em;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 10px;
     }
-    .progress-fill {
-      height: 10px; width: 0%; background: #59C3B8;
-      transition: width 1s ease;
+
+    .input-group {
+      margin-bottom: 15px;
     }
-    .stat-item { margin-bottom: 14px; }
-    .stat-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.95em; font-weight: 500;
-      margin-bottom: 4px;
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .btn {
+      background: #6C63FF;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #524bd2;
+    }
+
+    .centered {
+      text-align: center;
     }
 
     .badge-box {
-      background: #f9f9ff;
-      border: 1px dashed #ccc;
-      padding: 10px;
-      border-radius: 12px;
-      margin-bottom: 12px;
+      background: #F1F4FF;
+      border: 1px dashed #AAB0E4;
+      padding: 15px;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      animation: popIn 0.5s ease;
     }
 
-    .badge-emoji { font-size: 2.3rem; }
-    .badge-name { font-size: 1.1rem; font-weight: 600; margin-top: 5px; }
-    .badge-desc { color: #777; font-size: 0.9rem; }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .badge-emoji { font-size: 2.5rem; }
+    .badge-name { font-size: 1.1rem; font-weight: 600; margin-top: 8px; }
+    .badge-desc { font-size: 0.9rem; color: #666; }
+
+    .progress-bar {
+      background: #E0E7FF;
+      height: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 10px;
+      width: 0%;
+      background: #6C63FF;
+      transition: width 1s ease;
+    }
+
+    .stat-item { margin-bottom: 14px; }
+    .stat-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95em;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
     .hidden { display: none; }
+    .popup {
+      background: #FFF8E7;
+      border-left: 4px solid #FFD54F;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      animation: slideDown 0.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .xp-level {
+      margin: 10px 0;
+      font-weight: bold;
+      color: #6C63FF;
+    }
+
+    .rank-info {
+      text-align: center;
+      margin-top: 10px;
+      color: #888;
+      font-size: 0.95em;
+    }
+
+    .btn-refresh {
+      margin-top: 10px;
+      background: #FF9E9E;
+    }
+
+    .btn-refresh:hover {
+      background: #e97c7c;
+    }
   </style>
 </head>
 <body>
@@ -69,20 +166,26 @@
       <p id="login-message" class="centered" style="color:red;margin-top:10px;"></p>
     </div>
 
+    <!-- Pop-up Pesan Guru -->
+    <div id="pesan-guru-card" class="card hidden popup"></div>
+
     <!-- Info Siswa -->
     <div id="dashboard-card" class="card hidden centered">
       <h2 id="nama-siswa"></h2>
       <p><strong>NIS:</strong> <span id="nis-siswa"></span></p>
       <p><strong>Kelas:</strong> <span id="kelas-siswa"></span></p>
+      <p class="xp-level">XP: <span id="xp"></span> | Level: <span id="level"></span></p>
+      <p class="rank-info">Ranking: <span id="rank"></span> dari <span id="total-siswa"></span> siswa</p>
+      <button class="btn btn-refresh" onclick="refreshData()">Refresh</button>
     </div>
 
-    <!-- Badge Section -->
+    <!-- Badge -->
     <div id="badge-card" class="card hidden">
       <div class="title">Badge Siswa</div>
       <div id="badge-container"></div>
     </div>
 
-    <!-- Statistik Nilai -->
+    <!-- Nilai -->
     <div id="statistik-card" class="card hidden">
       <div class="title">Statistik Nilai</div>
       <div id="stat-list"></div>
@@ -95,7 +198,9 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweQx_EQiQKea8gM2yG74GWvwqHuavsrUcjYynlTnTSXEv3Jr1z13ZLmuR1chDr0CJvWQ/exec"; // ganti dengan URL Web App kamu
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW53uLSjm0kmZWvEfGPWpPsWzACPNJnxNakbtvIcfdAtyPCxYgyaelstVvVj7CyFes/exec"; // ganti ini
+
+    let cachedData = null;
 
     function login() {
       const u = document.getElementById("username").value.trim();
@@ -116,23 +221,34 @@
         body: formData
       })
       .then(res => res.json())
-      .then(handleLogin)
+      .then(data => {
+        cachedData = data;
+        handleLogin(data);
+      })
       .catch(() => {
         document.getElementById("login-message").innerText = "Server error.";
       });
     }
 
+    function refreshData() {
+      if (cachedData) handleLogin(cachedData);
+    }
+
     function handleLogin(res) {
       if (res.status === "ok") {
-        document.getElementById("login-card").classList.add("hidden");
-        document.getElementById("dashboard-card").classList.remove("hidden");
-        document.getElementById("badge-card").classList.remove("hidden");
-        document.getElementById("statistik-card").classList.remove("hidden");
-        document.getElementById("logout-card").classList.remove("hidden");
+        ["login-card"].forEach(id => document.getElementById(id).classList.add("hidden"));
+        ["dashboard-card", "badge-card", "statistik-card", "logout-card", "pesan-guru-card"].forEach(id =>
+          document.getElementById(id).classList.remove("hidden")
+        );
 
         document.getElementById("nama-siswa").innerText = res.nama;
         document.getElementById("nis-siswa").innerText = res.nis;
         document.getElementById("kelas-siswa").innerText = res.kelas;
+        document.getElementById("xp").innerText = res.xp;
+        document.getElementById("level").innerText = res.level;
+        document.getElementById("rank").innerText = res.ranking;
+        document.getElementById("total-siswa").innerText = res.total_siswa;
+        document.getElementById("pesan-guru-card").innerText = res.pesan_guru;
 
         const badgeContainer = document.getElementById("badge-container");
         badgeContainer.innerHTML = "";
