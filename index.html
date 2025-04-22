@@ -95,7 +95,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWRzHYWv_VVUoJKJwlSqVFAeh91RQxFQL45QmgARItJ_6IMKddb18LH_YjZtzSyO48aw/exec"; // GANTI dengan URL Web App kamu
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbweQx_EQiQKea8gM2yG74GWvwqHuavsrUcjYynlTnTSXEv3Jr1z13ZLmuR1chDr0CJvWQ/exec"; // ganti dengan URL Web App kamu
 
     function login() {
       const u = document.getElementById("username").value.trim();
@@ -107,14 +107,13 @@
         return;
       }
 
-      const formBody = `username=${encodeURIComponent(u)}&password=${encodeURIComponent(p)}`;
+      const formData = new FormData();
+      formData.append("username", u);
+      formData.append("password", p);
 
       fetch(SCRIPT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: formBody
+        body: formData
       })
       .then(res => res.json())
       .then(handleLogin)
