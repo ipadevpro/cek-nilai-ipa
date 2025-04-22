@@ -282,4 +282,11 @@
     }
   </script>
 </body>
+<script>
+  // Paksa loading hilang saat halaman selesai dimuat
+  window.addEventListener("load", () => {
+    document.getElementById("loading").classList.add("hidden");
+    console.log("✅ Halaman selesai dimuat, loading disembunyikan");
+  });
+</script>
 </html>
