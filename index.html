@@ -3,33 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Siswa</title>
+  <title>Dashboard Rapormu</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background: #F9FAFB;
-      color: #333;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
+    body { margin: 0; padding: 0; background: #F9FAFB; color: #333; }
+    .container { max-width: 500px; margin: auto; padding: 20px; }
 
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-      margin-bottom: 20px;
+      background: white; padding: 20px; border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04); margin-bottom: 20px;
       animation: fadeIn 0.4s ease;
     }
 
@@ -38,119 +21,66 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .title {
-      font-size: 1.5em;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .input-group {
-      margin-bottom: 15px;
-    }
-
+    .title { font-size: 1.5em; font-weight: 600; text-align: center; margin-bottom: 10px; }
+    .input-group { margin-bottom: 15px; }
     .input-group input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;
     }
 
     .btn {
-      background: #6C63FF;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      width: 100%;
-      font-weight: bold;
-      cursor: pointer;
+      background: #6C63FF; color: white; padding: 12px;
+      border: none; border-radius: 10px; width: 100%; font-weight: bold;
+    }
+    .btn:hover { background: #524bd2; }
+
+    .tab-menu {
+      display: flex; justify-content: space-between;
+      margin: 10px 0; border-radius: 10px; overflow: hidden;
+    }
+    .tab-btn {
+      flex: 1; padding: 12px; text-align: center;
+      background: #E5E7EB; cursor: pointer; font-weight: 500;
+    }
+    .tab-btn.active {
+      background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
 
-    .btn:hover {
-      background: #524bd2;
+    .tab-content { display: none; animation: fadeTab 0.3s ease; }
+    .tab-content.active { display: block; }
+
+    @keyframes fadeTab {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    .centered {
-      text-align: center;
+    .progress-bar {
+      background: #E0E7FF; height: 10px; border-radius: 10px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 10px; width: 0%; background: #6C63FF;
+      transition: width 1s ease;
     }
 
     .badge-box {
-      background: #F1F4FF;
-      border: 1px dashed #AAB0E4;
-      padding: 15px;
-      border-radius: 14px;
-      margin-bottom: 15px;
+      background: #F1F4FF; border: 1px dashed #AAB0E4;
+      padding: 15px; border-radius: 14px; margin-bottom: 15px;
       animation: popIn 0.5s ease;
     }
-
     @keyframes popIn {
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
-    .badge-emoji { font-size: 2.5rem; }
-    .badge-name { font-size: 1.1rem; font-weight: 600; margin-top: 8px; }
-    .badge-desc { font-size: 0.9rem; color: #666; }
-
-    .progress-bar {
-      background: #E0E7FF;
-      height: 10px;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 10px;
-      width: 0%;
-      background: #6C63FF;
-      transition: width 1s ease;
-    }
-
-    .stat-item { margin-bottom: 14px; }
-    .stat-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.95em;
-      font-weight: 500;
-      margin-bottom: 4px;
+    .footer {
+      text-align: center; font-size: 0.85em; color: #aaa;
+      margin-top: 40px;
     }
 
     .hidden { display: none; }
+    .centered { text-align: center; }
     .popup {
-      background: #FFF8E7;
-      border-left: 4px solid #FFD54F;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      animation: slideDown 0.5s ease;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .xp-level {
-      margin: 10px 0;
-      font-weight: bold;
-      color: #6C63FF;
-    }
-
-    .rank-info {
-      text-align: center;
-      margin-top: 10px;
-      color: #888;
-      font-size: 0.95em;
-    }
-
-    .btn-refresh {
-      margin-top: 10px;
-      background: #FF9E9E;
-    }
-
-    .btn-refresh:hover {
-      background: #e97c7c;
+      background: #FFF8E7; border-left: 4px solid #FFD54F;
+      padding: 15px; border-radius: 12px; margin-bottom: 20px;
     }
   </style>
 </head>
@@ -159,47 +89,55 @@
 
     <!-- Login -->
     <div id="login-card" class="card">
-      <div class="title">Login Rapor</div>
-      <div class="input-group"><input type="text" id="username" placeholder="Username"></div>
-      <div class="input-group"><input type="password" id="password" placeholder="Password"></div>
-      <button class="btn" onclick="login()">Masuk</button>
+      <div class="title">Masuk Dashboard 📋</div>
+      <p class="centered" style="margin-top: -5px; font-size: 0.95em; color: #666;">Masuk dulu cuy biar bisa intip rapormu 😎</p>
+      <div class="input-group"><input type="text" id="username" placeholder="Username lo"></div>
+      <div class="input-group"><input type="password" id="password" placeholder="Password rahasia..."></div>
+      <button class="btn" onclick="login()">Gass Masuk!</button>
       <p id="login-message" class="centered" style="color:red;margin-top:10px;"></p>
     </div>
 
-    <!-- Pop-up Pesan Guru -->
+    <!-- Pesan Guru -->
     <div id="pesan-guru-card" class="card hidden popup"></div>
 
-    <!-- Info Siswa -->
+    <!-- Dashboard Info -->
     <div id="dashboard-card" class="card hidden centered">
       <h2 id="nama-siswa"></h2>
       <p><strong>NIS:</strong> <span id="nis-siswa"></span></p>
       <p><strong>Kelas:</strong> <span id="kelas-siswa"></span></p>
-      <p class="xp-level">XP: <span id="xp"></span> | Level: <span id="level"></span></p>
-      <p class="rank-info">Ranking: <span id="rank"></span> dari <span id="total-siswa"></span> siswa</p>
-      <button class="btn btn-refresh" onclick="refreshData()">Refresh</button>
+      <p style="color:#6C63FF;"><strong>XP:</strong> <span id="xp"></span> | <strong>Level:</strong> <span id="level"></span></p>
+      <p style="font-size:0.9em;color:#777;">Ranking kamu: ke-<span id="rank"></span> dari <span id="total-siswa"></span> siswa 🧠</p>
+      <button class="btn" onclick="refreshData()" style="background:#FF9E9E; margin-top: 10px;">🔄 Refresh Data</button>
     </div>
 
-    <!-- Badge -->
-    <div id="badge-card" class="card hidden">
-      <div class="title">Badge Siswa</div>
-      <div id="badge-container"></div>
+    <!-- Tab Menu -->
+    <div class="tab-menu hidden" id="tab-menu">
+      <div class="tab-btn active" onclick="switchTab('nilai')">📊 Nilai</div>
+      <div class="tab-btn" onclick="switchTab('badge')">🏅 Badge</div>
     </div>
 
-    <!-- Nilai -->
-    <div id="statistik-card" class="card hidden">
-      <div class="title">Statistik Nilai</div>
+    <!-- Tab Nilai -->
+    <div id="tab-nilai" class="tab-content card hidden active">
+      <div class="title">Statistik Nilai 📊</div>
       <div id="stat-list"></div>
     </div>
 
-    <div id="logout-card" class="card hidden centered">
-      <button class="btn" onclick="logout()">Keluar</button>
+    <!-- Tab Badge -->
+    <div id="tab-badge" class="tab-content card hidden">
+      <div class="title">Badge Kerenmu 🏅</div>
+      <div id="badge-container"></div>
     </div>
+
+    <div id="logout-card" class="card hidden centered">
+      <button class="btn" onclick="logout()">🚪 Keluar</button>
+    </div>
+
+    <div class="footer">developed by Devi Saidulloh, S.Pd. with ☕, pixels & a sprinkle of 💡</div>
 
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW53uLSjm0kmZWvEfGPWpPsWzACPNJnxNakbtvIcfdAtyPCxYgyaelstVvVj7CyFes/exec"; // ganti ini
-
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW53uLSjm0kmZWvEfGPWpPsWzACPNJnxNakbtvIcfdAtyPCxYgyaelstVvVj7CyFes/exec"; // ganti ya
     let cachedData = null;
 
     function login() {
@@ -208,7 +146,7 @@
       document.getElementById("login-message").innerText = "";
 
       if (!u || !p) {
-        document.getElementById("login-message").innerText = "Lengkapi semua kolom.";
+        document.getElementById("login-message").innerText = "Lengkapi dulu dong 🙄";
         return;
       }
 
@@ -226,7 +164,7 @@
         handleLogin(data);
       })
       .catch(() => {
-        document.getElementById("login-message").innerText = "Server error.";
+        document.getElementById("login-message").innerText = "Waduh server-nya error nih 😵";
       });
     }
 
@@ -236,8 +174,8 @@
 
     function handleLogin(res) {
       if (res.status === "ok") {
-        ["login-card"].forEach(id => document.getElementById(id).classList.add("hidden"));
-        ["dashboard-card", "badge-card", "statistik-card", "logout-card", "pesan-guru-card"].forEach(id =>
+        document.getElementById("login-card").classList.add("hidden");
+        ["dashboard-card", "tab-menu", "tab-nilai", "logout-card", "pesan-guru-card"].forEach(id =>
           document.getElementById(id).classList.remove("hidden")
         );
 
@@ -281,7 +219,20 @@
           }, 100);
         }
       } else {
-        document.getElementById("login-message").innerText = "Login gagal. Username/password salah.";
+        document.getElementById("login-message").innerText = "Yahh... gagal login, cek ulang deh passwordnya 🙈";
+      }
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove("active"));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove("active"));
+
+      if (tab === "nilai") {
+        document.querySelectorAll('.tab-btn')[0].classList.add("active");
+        document.getElementById("tab-nilai").classList.add("active");
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add("active");
+        document.getElementById("tab-badge").classList.add("active");
       }
     }
 
