@@ -66,9 +66,17 @@
       padding: 15px; border-radius: 14px; margin-bottom: 15px;
       animation: popIn 0.5s ease;
     }
+
     @keyframes popIn {
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    .stat-item { margin-bottom: 18px; }
+    .stat-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.95em; font-weight: 500;
+      margin-bottom: 8px;
     }
 
     .footer {
@@ -78,14 +86,28 @@
 
     .hidden { display: none; }
     .centered { text-align: center; }
-    .popup {
-      background: #FFF8E7; border-left: 4px solid #FFD54F;
-      padding: 15px; border-radius: 12px; margin-bottom: 20px;
+
+    #loading {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(255,255,255,0.8); display: flex;
+      align-items: center; justify-content: center; z-index: 9999;
+    }
+
+    .spinner {
+      border: 6px solid #eee; border-top: 6px solid #6C63FF;
+      border-radius: 50%; width: 40px; height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <div id="loading" class="hidden"><div class="spinner"></div></div>
 
     <!-- Login -->
     <div id="login-card" class="card">
@@ -97,10 +119,7 @@
       <p id="login-message" class="centered" style="color:red;margin-top:10px;"></p>
     </div>
 
-    <!-- Pesan Guru -->
-    <div id="pesan-guru-card" class="card hidden popup"></div>
-
-    <!-- Dashboard Info -->
+    <!-- Dashboard -->
     <div id="dashboard-card" class="card hidden centered">
       <h2 id="nama-siswa"></h2>
       <p><strong>NIS:</strong> <span id="nis-siswa"></span></p>
@@ -114,8 +133,8 @@
     <div class="tab-menu hidden" id="tab-menu">
       <div class="tab-btn active" onclick="switchTab('nilai')">📊 Nilai</div>
       <div class="tab-btn" onclick="switchTab('badge')">🏅 Badge</div>
+      <div class="tab-btn" onclick="switchTab('pesan')">💌 Pesan Guru</div>
     </div>
-
     <!-- Tab Nilai -->
     <div id="tab-nilai" class="tab-content card hidden active">
       <div class="title">Statistik Nilai 📊</div>
@@ -128,17 +147,27 @@
       <div id="badge-container"></div>
     </div>
 
+    <!-- Tab Pesan Guru -->
+    <div id="tab-pesan" class="tab-content card hidden">
+      <div class="title">Pesan Khusus dari Guru 💌</div>
+      <p id="pesan-guru" style="font-size:1.1em;color:#555;"></p>
+    </div>
+
+    <!-- Logout -->
     <div id="logout-card" class="card hidden centered">
       <button class="btn" onclick="logout()">🚪 Keluar</button>
     </div>
 
     <div class="footer">developed by Devi Saidulloh, S.Pd. with ☕, pixels & a sprinkle of 💡</div>
-
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW53uLSjm0kmZWvEfGPWpPsWzACPNJnxNakbtvIcfdAtyPCxYgyaelstVvVj7CyFes/exec"; // ganti ya
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzW53uLSjm0kmZWvEfGPWpPsWzACPNJnxNakbtvIcfdAtyPCxYgyaelstVvVj7CyFes/exec"; // ganti dengan URL Web App kamu
     let cachedData = null;
+
+    function showLoading(show) {
+      document.getElementById("loading").classList.toggle("hidden", !show);
+    }
 
     function login() {
       const u = document.getElementById("username").value.trim();
@@ -149,6 +178,8 @@
         document.getElementById("login-message").innerText = "Lengkapi dulu dong 🙄";
         return;
       }
+
+      showLoading(true);
 
       const formData = new FormData();
       formData.append("username", u);
@@ -162,9 +193,11 @@
       .then(data => {
         cachedData = data;
         handleLogin(data);
+        showLoading(false);
       })
       .catch(() => {
-        document.getElementById("login-message").innerText = "Waduh server-nya error nih 😵";
+        document.getElementById("login-message").innerText = "Waduh server-nya error 😵";
+        showLoading(false);
       });
     }
 
@@ -175,7 +208,7 @@
     function handleLogin(res) {
       if (res.status === "ok") {
         document.getElementById("login-card").classList.add("hidden");
-        ["dashboard-card", "tab-menu", "tab-nilai", "logout-card", "pesan-guru-card"].forEach(id =>
+        ["dashboard-card", "tab-menu", "tab-nilai", "logout-card"].forEach(id =>
           document.getElementById(id).classList.remove("hidden")
         );
 
@@ -186,8 +219,9 @@
         document.getElementById("level").innerText = res.level;
         document.getElementById("rank").innerText = res.ranking;
         document.getElementById("total-siswa").innerText = res.total_siswa;
-        document.getElementById("pesan-guru-card").innerText = res.pesan_guru;
+        document.getElementById("pesan-guru").innerText = res.pesan_guru;
 
+        // Badge
         const badgeContainer = document.getElementById("badge-container");
         badgeContainer.innerHTML = "";
         for (let i = 0; i < res.emoji.length; i++) {
@@ -199,6 +233,7 @@
             </div>`;
         }
 
+        // Nilai
         const list = document.getElementById("stat-list");
         list.innerHTML = "";
         for (let i = 0; i < res.mapel.length; i++) {
@@ -218,8 +253,11 @@
             document.getElementById(barID).style.width = nilai + "%";
           }, 100);
         }
+
+        // Tab default aktif: Nilai
+        switchTab("nilai");
       } else {
-        document.getElementById("login-message").innerText = "Yahh... gagal login, cek ulang deh passwordnya 🙈";
+        document.getElementById("login-message").innerText = "Yahh... gagal login, cek lagi yaa password-nya 🙈";
       }
     }
 
@@ -230,9 +268,12 @@
       if (tab === "nilai") {
         document.querySelectorAll('.tab-btn')[0].classList.add("active");
         document.getElementById("tab-nilai").classList.add("active");
-      } else {
+      } else if (tab === "badge") {
         document.querySelectorAll('.tab-btn')[1].classList.add("active");
         document.getElementById("tab-badge").classList.add("active");
+      } else if (tab === "pesan") {
+        document.querySelectorAll('.tab-btn')[2].classList.add("active");
+        document.getElementById("tab-pesan").classList.add("active");
       }
     }
 
