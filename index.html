@@ -4,103 +4,448 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard Rapormu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <style>
-    * { box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.3s ease; }
-    body { margin: 0; padding: 0; background: #F9FAFB; color: #333; }
-    .container { max-width: 500px; margin: auto; padding: 20px; }
-
-    .card {
-      background: white; padding: 20px; border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04); margin-bottom: 20px;
+    :root {
+      --primary: #7F5AF0;
+      --primary-dark: #6B46E5;
+      --secondary: #2CB67D;
+      --bg-color: #16161A;
+      --surface: #242629;
+      --light-text: #FFFFFE;
+      --light-para: #94A1B2;
+      --accent: #FF8906;
+      --danger: #FF5470;
+    }
+    * { 
+      box-sizing: border-box; 
+      font-family: 'Inter', sans-serif; 
+      transition: all 0.3s ease; 
+    }
+    body { 
+      margin: 0; 
+      padding: 0; 
+      background: var(--bg-color); 
+      color: var(--light-text);
+      background-image: 
+        radial-gradient(circle at 25% 10%, rgba(127, 90, 240, 0.2) 0%, transparent 20%),
+        radial-gradient(circle at 75% 75%, rgba(44, 182, 125, 0.1) 0%, transparent 20%);
+      min-height: 100vh;
+    }
+    .container { 
+      max-width: 500px; 
+      margin: auto; 
+      padding: 20px; 
     }
 
-    .title { font-size: 1.5em; font-weight: 600; text-align: center; margin-bottom: 10px; }
-    .input-group { margin-bottom: 15px; }
+    .card {
+      background: var(--surface); 
+      padding: 25px; 
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2); 
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .title { 
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6em; 
+      font-weight: 700; 
+      text-align: center; 
+      margin-bottom: 15px; 
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .input-group { 
+      margin-bottom: 18px; 
+    }
+    
     .input-group input {
-      width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 10px;
+      width: 100%; 
+      padding: 14px; 
+      background: rgba(255,255,255,0.05);
+      color: var(--light-text);
+      border: 1px solid rgba(255,255,255,0.1); 
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.2);
     }
 
     .btn {
-      background: #6C63FF; color: white; padding: 12px;
-      border: none; border-radius: 10px; width: 100%; font-weight: bold;
+      background: var(--primary); 
+      color: white; 
+      padding: 14px;
+      border: none; 
+      border-radius: 12px; 
+      width: 100%; 
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(127, 90, 240, 0.3);
     }
-    .btn:hover { background: #524bd2; }
+    
+    .btn:hover { 
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
 
     .tab-menu {
-      display: flex; justify-content: space-between;
-      margin: 10px 0; border-radius: 10px; overflow: hidden;
+      display: flex; 
+      justify-content: space-between;
+      margin: 10px 0; 
+      border-radius: 14px; 
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      padding: 5px;
     }
+    
     .tab-btn {
-      flex: 1; padding: 12px; text-align: center;
-      background: #E5E7EB; cursor: pointer; font-weight: 500;
+      flex: 1; 
+      padding: 12px; 
+      text-align: center;
+      border-radius: 10px;
+      background: transparent; 
+      cursor: pointer; 
+      font-weight: 500;
+      color: var(--light-para);
     }
+    
     .tab-btn.active {
-      background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-content { 
+      display: none; 
+    }
+    
+    .tab-content.active { 
+      display: block; 
+      animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .progress-bar {
-      background: #E0E7FF; height: 10px; border-radius: 10px; overflow: hidden;
+      background: rgba(255,255,255,0.1);
+      height: 10px; 
+      border-radius: 10px; 
+      overflow: hidden;
     }
+    
     .progress-fill {
-      height: 10px; width: 0%; background: #6C63FF;
-      transition: width 1s ease;
+      height: 10px; 
+      width: 0%; 
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      transition: width 1s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     .badge-box {
-      background: #F1F4FF; border: 1px dashed #AAB0E4;
-      padding: 15px; border-radius: 14px; margin-bottom: 15px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 18px; 
+      border-radius: 16px; 
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .badge-box::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      opacity: 0.1;
+      border-radius: 50%;
+    }
+    
+    .badge-emoji {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+    
+    .badge-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .badge-desc {
+      color: var(--light-para);
+      font-size: 0.9rem;
     }
 
-    .stat-item { margin-bottom: 18px; }
+    .stat-item { 
+      margin-bottom: 20px; 
+    }
+    
     .stat-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.95em; font-weight: 500;
+      display: flex; 
+      justify-content: space-between;
+      font-size: 0.95em; 
+      font-weight: 500;
       margin-bottom: 8px;
     }
 
     .footer {
-      text-align: center; font-size: 0.85em; color: #aaa;
+      text-align: center; 
+      font-size: 0.85em; 
+      color: var(--light-para);
       margin-top: 40px;
+      padding-bottom: 20px;
     }
 
-    .hidden { display: none; }
-    .centered { text-align: center; }
+    .hidden { 
+      display: none; 
+    }
+    
+    .centered { 
+      text-align: center; 
+    }
+    
+    /* Admin panel styles */
+    .admin-trigger {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: transparent;
+      z-index: 100;
+      cursor: pointer;
+    }
+    
+    .admin-panel {
+      position: fixed;
+      top: 0;
+      right: -350px;
+      width: 340px;
+      height: 100vh;
+      background: var(--surface);
+      box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+      z-index: 99;
+      transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      padding: 20px;
+      overflow-y: auto;
+      border-left: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .admin-panel.open {
+      right: 0;
+    }
+    
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .close-admin {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--light-text);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .close-admin:hover {
+      background: var(--danger);
+    }
+    
+    .admin-section {
+      margin-bottom: 25px;
+    }
+    
+    .admin-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .admin-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--light-text);
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+    
+    .admin-btn:hover {
+      background: var(--primary);
+    }
+    
+    .admin-url {
+      font-size: 0.8rem;
+      padding: 8px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 5px;
+      word-break: break-all;
+      margin-top: 5px;
+    }
+
+    .admin-input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--light-text);
+      margin-bottom: 10px;
+    }
+    
+    /* Student list for admin */
+    .student-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 5px;
+    }
+    
+    .student-item {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+    }
+    
+    .student-item:hover {
+      background: rgba(127, 90, 240, 0.1);
+    }
+    
+    /* Matrix effect */
+    .login-animation {
+      height: 150px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 15px;
+    }
+    
+    /* For mobile */
+    @media (max-width: 600px) {
+      .admin-panel {
+        width: 300px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="admin-trigger" id="admin-trigger"></div>
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-header">
+      <h3 style="margin:0;">🔐 Admin Panel</h3>
+      <button class="close-admin" onclick="toggleAdminPanel()">✕</button>
+    </div>
+    
+    <div class="admin-section">
+      <div class="admin-title">🔗 Google Script URL</div>
+      <div class="admin-url" id="script-url"></div>
+      <input type="text" id="new-script-url" class="admin-input" placeholder="Masukkan URL baru...">
+      <button class="admin-btn" onclick="updateScriptURL()">Update URL</button>
+    </div>
+    
+    <div class="admin-section">
+      <div class="admin-title">👨‍🎓 Manajemen Siswa</div>
+      <div class="student-list" id="student-list">
+        <!-- Students will be populated here -->
+      </div>
+      <button class="admin-btn" onclick="addNewStudent()">+ Tambah Siswa</button>
+      <button class="admin-btn" onclick="refreshStudentList()">🔄 Refresh</button>
+    </div>
+    
+    <div class="admin-section">
+      <div class="admin-title">🏆 Manajemen XP & Badge</div>
+      <input type="text" id="student-id" class="admin-input" placeholder="ID Siswa">
+      <div style="display:flex;gap:5px;margin-bottom:10px;">
+        <input type="number" id="xp-amount" class="admin-input" placeholder="Jumlah XP">
+        <button class="admin-btn" onclick="addXP()">Tambah XP</button>
+      </div>
+      <div style="display:flex;gap:5px;">
+        <input type="text" id="badge-emoji" class="admin-input" placeholder="Emoji" style="width:25%">
+        <input type="text" id="badge-name" class="admin-input" placeholder="Nama Badge" style="width:75%">
+      </div>
+      <input type="text" id="badge-desc" class="admin-input" placeholder="Deskripsi Badge">
+      <button class="admin-btn" onclick="addBadge()">Tambah Badge</button>
+    </div>
+    
+    <div class="admin-section">
+      <div class="admin-title">📊 Manajemen Nilai</div>
+      <input type="text" id="grade-student-id" class="admin-input" placeholder="ID Siswa">
+      <div style="display:flex;gap:5px;">
+        <input type="text" id="subject-name" class="admin-input" placeholder="Nama Mapel">
+        <input type="number" id="grade-value" class="admin-input" placeholder="Nilai">
+      </div>
+      <button class="admin-btn" onclick="updateGrade()">Update Nilai</button>
+    </div>
+  </div>
+  
   <div class="container">
     <!-- Login -->
-    <div id="login-card" class="card">
-      <div class="title">Masuk Dashboard 📋</div>
-      <p class="centered" style="margin-top: -5px; font-size: 0.95em; color: #666;">Masuk dulu cuy biar bisa intip rapormu 😎</p>
+    <div id="login-card" class="card animate__animated animate__fadeIn">
+      <div class="title">Masuk Dashboard 📱</div>
+      <div class="login-animation" id="login-animation"></div>
+      <p class="centered" style="margin-top: -5px; font-size: 0.95em; color: var(--light-para);">Masuk dulu cuy biar bisa intip rapormu 😎✨</p>
       <div class="input-group"><input type="text" id="username" placeholder="Username kamu"></div>
       <div class="input-group"><input type="password" id="password" placeholder="Password rahasia..."></div>
       <button class="btn" onclick="login()">Gass Masuk!</button>
-      <p id="login-message" class="centered" style="color:red;margin-top:10px;"></p>
+      <p id="login-message" class="centered" style="color:var(--danger);margin-top:10px;"></p>
     </div>
 
     <!-- Dashboard -->
-    <div id="dashboard-card" class="card hidden centered">
-      <h2 id="nama-siswa"></h2>
-      <p><strong>NIS:</strong> <span id="nis-siswa"></span></p>
-      <p><strong>Kelas:</strong> <span id="kelas-siswa"></span></p>
-      <p style="color:#6C63FF;"><strong>XP:</strong> <span id="xp"></span> | <strong>Level:</strong> <span id="level"></span></p>
-      <p style="font-size:0.9em;color:#777;">Ranking kamu: ke-<span id="rank"></span> dari <span id="total-siswa"></span> siswa 🧠</p>
-      <button class="btn" onclick="refreshData()" style="background:#FF9E9E; margin-top: 10px;">🔄 Refresh Data</button>
+    <div id="dashboard-card" class="card hidden animate__animated animate__fadeIn">
+      <h2 id="nama-siswa" style="margin-top:5px;text-align:center;font-family:'Poppins',sans-serif;"></h2>
+      <div style="display:flex;justify-content:center;gap:20px;margin-bottom:10px;">
+        <p style="margin:5px;"><strong>NIS:</strong> <span id="nis-siswa"></span></p>
+        <p style="margin:5px;"><strong>Kelas:</strong> <span id="kelas-siswa"></span></p>
+      </div>
+      <div style="background:rgba(127, 90, 240, 0.1);border-radius:10px;padding:10px;text-align:center;margin:10px 0;">
+        <p style="color:var(--primary);margin:5px;"><strong>XP:</strong> <span id="xp"></span> | <strong>Level:</strong> <span id="level"></span></p>
+        <p style="font-size:0.9em;color:var(--light-para);margin:5px;">Ranking kamu: ke-<span id="rank"></span> dari <span id="total-siswa"></span> siswa 🧠</p>
+      </div>
+      <button class="btn" onclick="refreshData()" style="background:var(--secondary); margin-top: 10px;">🔄 Refresh Data</button>
     </div>
 
     <!-- Tab Menu -->
-    <div class="tab-menu hidden" id="tab-menu">
+    <div class="tab-menu hidden animate__animated animate__fadeIn" id="tab-menu">
       <div class="tab-btn active" onclick="switchTab('nilai')">📊 Nilai</div>
       <div class="tab-btn" onclick="switchTab('badge')">🏅 Badge</div>
-      <div class="tab-btn" onclick="switchTab('pesan')">💌 Pesan Guru</div>
+      <div class="tab-btn" onclick="switchTab('pesan')">💌 Pesan</div>
     </div>
+    
     <!-- Tab Nilai -->
-    <div id="tab-nilai" class="tab-content card hidden hidden">
+    <div id="tab-nilai" class="tab-content card hidden">
       <div class="title">Statistik Nilai 📊</div>
       <div id="stat-list"></div>
     </div>
@@ -114,12 +459,12 @@
     <!-- Tab Pesan Guru -->
     <div id="tab-pesan" class="tab-content card hidden">
       <div class="title">Pesan Khusus dari Guru 💌</div>
-      <p id="pesan-guru" style="font-size:1.1em;color:#555;"></p>
+      <p id="pesan-guru" style="font-size:1.1em;color:var(--light-para);"></p>
     </div>
 
     <!-- Logout -->
     <div id="logout-card" class="card hidden centered">
-      <button class="btn" onclick="logout()">🚪 Keluar</button>
+      <button class="btn" onclick="logout()" style="background:var(--danger);">🚪 Keluar</button>
     </div>
 
     <div class="footer">developed by Devi Saidulloh, S.Pd. with ☕, pixels & a sprinkle of 💡</div>
@@ -128,7 +473,149 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbykzhQiGRm4wdZMDs-oJKGMzuSUbXATS9JzDODup_esQlCvVzZ6oo8NP9OXNBwGR2rpTw/exec";
     let cachedData = null;
-
+    
+    // Admin Panel Controls
+    document.getElementById('admin-trigger').addEventListener('dblclick', toggleAdminPanel);
+    document.getElementById('script-url').innerText = SCRIPT_URL;
+    
+    function toggleAdminPanel() {
+      const panel = document.getElementById('admin-panel');
+      panel.classList.toggle('open');
+    }
+    
+    function updateScriptURL() {
+      const newURL = document.getElementById('new-script-url').value.trim();
+      if(newURL) {
+        // This would typically involve updating a configuration in a database
+        // For this demo, we'll just update the displayed URL
+        document.getElementById('script-url').innerText = newURL;
+        alert('URL updated! (In a real app, this would be saved to a database)');
+      }
+    }
+    
+    function refreshStudentList() {
+      // In a real implementation, this would fetch student data from the server
+      // For demo purposes, we'll populate with dummy data
+      const studentList = document.getElementById('student-list');
+      studentList.innerHTML = `
+        <div class="student-item">ID001 - Ahmad Fauzi (Kelas 9A)</div>
+        <div class="student-item">ID002 - Budi Santoso (Kelas 9A)</div>
+        <div class="student-item">ID003 - Citra Dewi (Kelas 9B)</div>
+        <div class="student-item">ID004 - Dimas Pratama (Kelas 9B)</div>
+        <div class="student-item">ID005 - Eka Putri (Kelas 9C)</div>
+      `;
+      
+      // Add click event to each student
+      const students = document.querySelectorAll('.student-item');
+      students.forEach(student => {
+        student.addEventListener('click', () => {
+          const id = student.textContent.split(' - ')[0];
+          document.getElementById('student-id').value = id;
+          document.getElementById('grade-student-id').value = id;
+          alert(`Selected student: ${student.textContent}`);
+        });
+      });
+    }
+    
+    function addNewStudent() {
+      const name = prompt('Nama siswa:');
+      const kelas = prompt('Kelas:');
+      if(name && kelas) {
+        const studentList = document.getElementById('student-list');
+        const id = 'ID' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        const newStudent = document.createElement('div');
+        newStudent.className = 'student-item';
+        newStudent.textContent = `${id} - ${name} (${kelas})`;
+        studentList.appendChild(newStudent);
+        
+        // Add click event
+        newStudent.addEventListener('click', () => {
+          document.getElementById('student-id').value = id;
+          document.getElementById('grade-student-id').value = id;
+          alert(`Selected student: ${newStudent.textContent}`);
+        });
+        
+        alert(`Student added: ${name} (${id})`);
+      }
+    }
+    
+    function addXP() {
+      const studentId = document.getElementById('student-id').value;
+      const xpAmount = document.getElementById('xp-amount').value;
+      
+      if(studentId && xpAmount) {
+        alert(`Added ${xpAmount} XP to student ${studentId}`);
+      } else {
+        alert('Please enter student ID and XP amount');
+      }
+    }
+    
+    function addBadge() {
+      const studentId = document.getElementById('student-id').value;
+      const emoji = document.getElementById('badge-emoji').value;
+      const name = document.getElementById('badge-name').value;
+      const desc = document.getElementById('badge-desc').value;
+      
+      if(studentId && emoji && name && desc) {
+        alert(`Badge "${name}" ${emoji} added to student ${studentId}`);
+      } else {
+        alert('Please fill all badge fields');
+      }
+    }
+    
+    function updateGrade() {
+      const studentId = document.getElementById('grade-student-id').value;
+      const subject = document.getElementById('subject-name').value;
+      const grade = document.getElementById('grade-value').value;
+      
+      if(studentId && subject && grade) {
+        alert(`Updated ${subject} grade to ${grade} for student ${studentId}`);
+      } else {
+        alert('Please fill all grade fields');
+      }
+    }
+    
+    // Matrix-like effect for login
+    function setupMatrixEffect() {
+      const canvas = document.createElement('canvas');
+      const container = document.getElementById('login-animation');
+      container.appendChild(canvas);
+      
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+      
+      const ctx = canvas.getContext('2d');
+      const chars = '01'.split('');
+      const columns = canvas.width / 15;
+      const drops = [];
+      
+      for(let i = 0; i < columns; i++) {
+        drops[i] = Math.floor(Math.random() * canvas.height / 15);
+      }
+      
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#7F5AF0';
+        ctx.font = '15px monospace';
+        
+        for(let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * 15, drops[i] * 15);
+          
+          if(drops[i] * 15 > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          
+          drops[i]++;
+        }
+      }
+      
+      setInterval(draw, 100);
+    }
+    
+    // Original functionality
     function login() {
       const u = document.getElementById("username").value.trim();
       const p = document.getElementById("password").value.trim();
@@ -218,23 +705,36 @@
 
     function switchTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove("active"));
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove("active"));
+      document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.remove("active");
+        el.classList.add("hidden");
+      });
 
       if (tab === "nilai") {
         document.querySelectorAll('.tab-btn')[0].classList.add("active");
         document.getElementById("tab-nilai").classList.add("active");
+        document.getElementById("tab-nilai").classList.remove("hidden");
       } else if (tab === "badge") {
         document.querySelectorAll('.tab-btn')[1].classList.add("active");
         document.getElementById("tab-badge").classList.add("active");
+        document.getElementById("tab-badge").classList.remove("hidden");
       } else if (tab === "pesan") {
         document.querySelectorAll('.tab-btn')[2].classList.add("active");
         document.getElementById("tab-pesan").classList.add("active");
+        document.getElementById("tab-pesan").classList.remove("hidden");
       }
     }
 
     function logout() {
       location.reload();
     }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      setupMatrixEffect();
+      // Initial load of student list for admin panel
+      refreshStudentList();
+    });
   </script>
 </body>
 </html>
