@@ -7,12 +7,15 @@ const useMatrixEffect = (containerRef) => {
   useEffect(() => {
     if (!containerRef.current) return;
     
+    // Store a reference to the current container element
+    const currentContainer = containerRef.current;
+    
     const canvas = document.createElement('canvas');
     canvasRef.current = canvas;
-    containerRef.current.appendChild(canvas);
+    currentContainer.appendChild(canvas);
     
-    canvas.width = containerRef.current.offsetWidth;
-    canvas.height = containerRef.current.offsetHeight;
+    canvas.width = currentContainer.offsetWidth;
+    canvas.height = currentContainer.offsetHeight;
     
     const ctx = canvas.getContext('2d');
     const chars = '10'.split('');
@@ -51,8 +54,14 @@ const useMatrixEffect = (containerRef) => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      if (canvasRef.current && containerRef.current) {
-        containerRef.current.removeChild(canvasRef.current);
+      
+      // Use the stored reference instead of containerRef.current
+      if (canvasRef.current && currentContainer) {
+        try {
+          currentContainer.removeChild(canvasRef.current);
+        } catch (e) {
+          console.warn('Error removing canvas:', e);
+        }
       }
     };
   }, [containerRef]);
